@@ -4,33 +4,12 @@ var substitutions = new Map();
 
 export default class MockableContainer extends Container {
     static substitute(original, replacement) {
-       substitutions.set(original, replacement);
-    }
 
-     /**
-     * Resolve a single class to an instance, injecting dependencies as needed
-     * @param  {class|string} clazz
-     * @return {object}       Instance of the class
-     */
-    static resolve(clazz) {
-        clazz = Container.normalizeClass(clazz);
-
-        // If the class being injected is a singleton, handle it separately
-        // since instances of it are cached.
-        if(super.getSingletons().has(clazz)) {
-            return super.resolveSingleton(clazz);
-        } else {
-            return MockableContainer.resolveSingleInstance(clazz);
-        }
-    }
-
-    /**
-     * Resolve the specified classes, injecting dependencies as needed
-     * @param  {class|string} ...classes
-     * @return {...object}
-     */
-    static resolveAll(...classes) {
-        return classes.map(MockableContainer.resolve);
+      // If any substitutions are made, replace Container's resolve function
+      Object.assign(Container, {
+        resolveSingleInstance: MockableContainer.mockableResolveSingleInstance
+      })
+      substitutions.set(original, replacement);
     }
 
     /**
@@ -38,9 +17,9 @@ export default class MockableContainer extends Container {
      * @param  {class|string} clazz
      * @return {object}       Resolved instance of the class
      */
-    static resolveSingleInstance(clazz) {
+    static mockableResolveSingleInstance(clazz) {
         // Check and see if there are any dependencies that need to be injected
-        var deps = MockableContainer.resolveAll(...(super.getDependencies().get(clazz) || []));
+        var deps = Container.resolveAll(...(super.getDependencies().get(clazz) || []));
         if(substitutions.has(clazz)) {
           var sub = substitutions.get(clazz);
           return new sub(...deps);

@@ -49,6 +49,12 @@ class MockDummyDependency{
   constructor() {}
 }
 
+@singleton
+class MockSingleton {
+
+}
+
+
 describe('mockableContainer', function() {
     afterEach(function(){
       mockableContainer.clear();
@@ -82,6 +88,18 @@ describe('mockableContainer', function() {
             expect(dummyClass.getDependency()).to.be.an.instanceOf(MockDummyDependency);
             expect(dummyClass.getDependency().getDependency).to.be.undefined;
         });
+        it('should resolve substituted singletons', function() {
+            mockableContainer.substitute(Singleton, MockSingleton);
+
+            var singletonInstance = mockableContainer.resolve(Singleton);
+
+            singletonInstance.value = 'hello-world';
+
+            var singletonInstanceTwo = mockableContainer.resolve(Singleton);
+            expect(singletonInstance).to.be.an.instanceOf(MockSingleton);
+            expect(singletonInstance).to.equal(singletonInstanceTwo);
+            expect(singletonInstance.value).to.equal(singletonInstanceTwo.value);
+        })
     });
 
     context("without mocks specified", function() {

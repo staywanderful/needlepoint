@@ -1,7 +1,7 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = undefined;
 
@@ -26,83 +26,52 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var substitutions = new Map();
 
 var MockableContainer = function (_Container) {
-    _inherits(MockableContainer, _Container);
+  _inherits(MockableContainer, _Container);
 
-    function MockableContainer() {
-        _classCallCheck(this, MockableContainer);
+  function MockableContainer() {
+    _classCallCheck(this, MockableContainer);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(MockableContainer).apply(this, arguments));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(MockableContainer).apply(this, arguments));
+  }
+
+  _createClass(MockableContainer, null, [{
+    key: 'substitute',
+    value: function substitute(original, replacement) {
+
+      // If any substitutions are made, replace Container's resolve function
+      Object.assign(_container2.default, {
+        resolveSingleInstance: MockableContainer.mockableResolveSingleInstance
+      });
+      substitutions.set(original, replacement);
     }
 
-    _createClass(MockableContainer, null, [{
-        key: 'substitute',
-        value: function substitute(original, replacement) {
-            substitutions.set(original, replacement);
-        }
+    /**
+     * Resolve a class into an instance with all of its dependencies injected.
+     * @param  {class|string} clazz
+     * @return {object}       Resolved instance of the class
+     */
 
-        /**
-        * Resolve a single class to an instance, injecting dependencies as needed
-        * @param  {class|string} clazz
-        * @return {object}       Instance of the class
-        */
+  }, {
+    key: 'mockableResolveSingleInstance',
+    value: function mockableResolveSingleInstance(clazz) {
+      // Check and see if there are any dependencies that need to be injected
+      var deps = _container2.default.resolveAll.apply(_container2.default, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), 'getDependencies', this).call(this).get(clazz) || []));
+      if (substitutions.has(clazz)) {
+        var sub = substitutions.get(clazz);
+        return new (Function.prototype.bind.apply(sub, [null].concat(_toConsumableArray(deps))))();
+      } else {
+        // Apply the dependencies and create a new instance of the class
+        return new (Function.prototype.bind.apply(clazz, [null].concat(_toConsumableArray(deps))))();
+      }
+    }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      substitutions.clear();
+    }
+  }]);
 
-    }, {
-        key: 'resolve',
-        value: function resolve(clazz) {
-            clazz = _container2.default.normalizeClass(clazz);
-
-            // If the class being injected is a singleton, handle it separately
-            // since instances of it are cached.
-            if (_get(Object.getPrototypeOf(MockableContainer), 'getSingletons', this).call(this).has(clazz)) {
-                return _get(Object.getPrototypeOf(MockableContainer), 'resolveSingleton', this).call(this, clazz);
-            } else {
-                return MockableContainer.resolveSingleInstance(clazz);
-            }
-        }
-
-        /**
-         * Resolve the specified classes, injecting dependencies as needed
-         * @param  {class|string} ...classes
-         * @return {...object}
-         */
-
-    }, {
-        key: 'resolveAll',
-        value: function resolveAll() {
-            for (var _len = arguments.length, classes = Array(_len), _key = 0; _key < _len; _key++) {
-                classes[_key] = arguments[_key];
-            }
-
-            return classes.map(MockableContainer.resolve);
-        }
-
-        /**
-         * Resolve a class into an instance with all of its dependencies injected.
-         * @param  {class|string} clazz
-         * @return {object}       Resolved instance of the class
-         */
-
-    }, {
-        key: 'resolveSingleInstance',
-        value: function resolveSingleInstance(clazz) {
-            // Check and see if there are any dependencies that need to be injected
-            var deps = MockableContainer.resolveAll.apply(MockableContainer, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), 'getDependencies', this).call(this).get(clazz) || []));
-            if (substitutions.has(clazz)) {
-                var sub = substitutions.get(clazz);
-                return new (Function.prototype.bind.apply(sub, [null].concat(_toConsumableArray(deps))))();
-            } else {
-                // Apply the dependencies and create a new instance of the class
-                return new (Function.prototype.bind.apply(clazz, [null].concat(_toConsumableArray(deps))))();
-            }
-        }
-    }, {
-        key: 'clear',
-        value: function clear() {
-            substitutions.clear();
-        }
-    }]);
-
-    return MockableContainer;
+  return MockableContainer;
 }(_container2.default);
 
 exports.default = MockableContainer;
