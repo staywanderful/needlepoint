@@ -1,12 +1,12 @@
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -21,13 +21,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var dependencies = new Map();
 var singletons = new Map();
 
-var Container = (function () {
+var Container = function () {
     function Container() {
         _classCallCheck(this, Container);
     }
 
     _createClass(Container, null, [{
-        key: 'resolve',
+        key: "resolve",
 
         /**
          * Resolve a single class to an instance, injecting dependencies as needed
@@ -53,7 +53,7 @@ var Container = (function () {
          */
 
     }, {
-        key: 'resolveAll',
+        key: "resolveAll",
         value: function resolveAll() {
             for (var _len = arguments.length, classes = Array(_len), _key = 0; _key < _len; _key++) {
                 classes[_key] = arguments[_key];
@@ -70,7 +70,7 @@ var Container = (function () {
          */
 
     }, {
-        key: 'resolveSingleton',
+        key: "resolveSingleton",
         value: function resolveSingleton(clazz) {
             if (singletons.get(clazz) === null) {
                 singletons.set(clazz, Container.resolveSingleInstance(clazz));
@@ -86,8 +86,9 @@ var Container = (function () {
          */
 
     }, {
-        key: 'resolveSingleInstance',
+        key: "resolveSingleInstance",
         value: function resolveSingleInstance(clazz) {
+            console.log("Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
             // Check and see if there are any dependencies that need to be injected
             var deps = Container.resolveAll.apply(Container, _toConsumableArray(dependencies.get(clazz) || []));
 
@@ -102,16 +103,16 @@ var Container = (function () {
          */
 
     }, {
-        key: 'normalizeClass',
+        key: "normalizeClass",
         value: function normalizeClass(clazz) {
             if (typeof clazz == 'string') {
                 // TODO: Actually resolve the class from the string name that
                 // was provided to us.
             } else if (typeof clazz == 'function') {
-                    return clazz;
-                } else {
-                    throw new Error('Unable to resolve the dependency name to the class.');
-                }
+                return clazz;
+            } else {
+                throw new Error('Unable to resolve the dependency name to the class.');
+            }
         }
 
         /**
@@ -121,9 +122,9 @@ var Container = (function () {
          */
 
     }, {
-        key: 'registerInstance',
+        key: "registerInstance",
         value: function registerInstance(clazz, instance) {
-            if ((typeof instance === 'undefined' ? 'undefined' : _typeof(instance)) != 'object' && typeof instance != 'function') {
+            if ((typeof instance === "undefined" ? "undefined" : _typeof(instance)) != 'object' && typeof instance != 'function') {
                 throw new Error('The argument passed was an invalid type.');
             }
 
@@ -139,7 +140,7 @@ var Container = (function () {
          */
 
     }, {
-        key: 'registerDependencies',
+        key: "registerDependencies",
         value: function registerDependencies(clazz, deps) {
             dependencies.set(clazz, deps);
         }
@@ -151,7 +152,7 @@ var Container = (function () {
          */
 
     }, {
-        key: 'registerAsSingleton',
+        key: "registerAsSingleton",
         value: function registerAsSingleton(clazz) {
             if (!singletons.has(clazz)) {
                 singletons.set(clazz, null);
@@ -160,6 +161,6 @@ var Container = (function () {
     }]);
 
     return Container;
-})();
+}();
 
 exports.default = Container;

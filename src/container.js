@@ -54,6 +54,7 @@ export default class Container {
      * @return {object}       Resolved instance of the class
      */
     static resolveSingleInstance(clazz) {
+        console.log("Resolving: " + clazz + " type " + typeof(clazz));
         // Check and see if there are any dependencies that need to be injected
         var deps = Container.resolveAll(...(dependencies.get(clazz) || []));
 
