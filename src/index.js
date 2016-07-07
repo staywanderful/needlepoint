@@ -8,5 +8,3 @@ export {default as container} from './container';
 // Decorators
 export {default as singleton} from './singleton';
 export {default as dependencies} from './dependencies';
-
-// export {default as mockableContainer} from './mockableContainer';
