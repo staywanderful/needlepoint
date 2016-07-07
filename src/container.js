@@ -8,6 +8,8 @@ var dependencies = new Map();
 var singletons = new Map();
 
 export default class Container {
+    static getSingletons() { return singletons };
+    static getDependencies() { return dependencies };
     /**
      * Resolve a single class to an instance, injecting dependencies as needed
      * @param  {class|string} clazz
