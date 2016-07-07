@@ -111,3 +111,37 @@ class SingletonDependency {
 If a class is declared to be a `@singleton`, then one instance will be created
 the first time the class is listed as a dependency or resolved, and this
 instance will be cached and used when other classes need an instance of it.
+
+
+### Test Mocks
+
+Needlepoint includes a simple test mocking facility for replacing dependencies in a test environment.  To use it, import your container from `mockableContainer` instead of from the main project.  `mockableContainer` is a subclass of `container` that adds the ability to substitute dependencies:
+
+
+```
+import {dependencies} from 'needlepoint';
+import container from 'needlepoint/mockableContainer';
+
+class MyDependency {
+    constructor()
+}
+class MockDependency {
+    constructor()
+}
+
+@dependencies(MyDependency)
+class HasDependencies{
+    constructor(myDependency) {
+        this.dependency = myDependency;
+    }
+}
+
+describe("Mocked dependency", function(){
+    it("should substitute the real dependency for a fake", function(){
+        container.substitute(MyDependency, MockDependency);
+        var obj = container.resolve(HasDependencies);
+        expect(obj.dependency).to.be.instanceOf(MockDependency);
+    });
+});
+
+```

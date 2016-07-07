@@ -19,6 +19,10 @@
     "di"
   ],
   "author": "Andrew Munsell <andrew@wizardapps.net>",
+  "contributors": [
+    "Andrew Munsell <andrew@wizardapps.net>",
+    "Evan Dorn <evan@idahoev.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/andrewmunsell/needlepoint/issues"
