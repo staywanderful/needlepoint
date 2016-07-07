@@ -9,11 +9,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _container = require('./container');
-
-var _container2 = _interopRequireDefault(_container);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _index = require('./index');
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -25,8 +21,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var substitutions = new Map();
 
-var MockableContainer = function (_Container) {
-  _inherits(MockableContainer, _Container);
+var MockableContainer = function (_container) {
+  _inherits(MockableContainer, _container);
 
   function MockableContainer() {
     _classCallCheck(this, MockableContainer);
@@ -39,7 +35,7 @@ var MockableContainer = function (_Container) {
     value: function substitute(original, replacement) {
 
       // If any substitutions are made, replace Container's resolve function
-      Object.assign(_container2.default, {
+      Object.assign(_index.container, {
         resolveSingleInstance: MockableContainer.mockableResolveSingleInstance
       });
       substitutions.set(original, replacement);
@@ -55,7 +51,7 @@ var MockableContainer = function (_Container) {
     key: 'mockableResolveSingleInstance',
     value: function mockableResolveSingleInstance(clazz) {
       // Check and see if there are any dependencies that need to be injected
-      var deps = _container2.default.resolveAll.apply(_container2.default, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), 'getDependencies', this).call(this).get(clazz) || []));
+      var deps = _index.container.resolveAll.apply(_index.container, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), 'getDependencies', this).call(this).get(clazz) || []));
       if (substitutions.has(clazz)) {
         var sub = substitutions.get(clazz);
         return new (Function.prototype.bind.apply(sub, [null].concat(_toConsumableArray(deps))))();
@@ -72,6 +68,6 @@ var MockableContainer = function (_Container) {
   }]);
 
   return MockableContainer;
-}(_container2.default);
+}(_index.container);
 
 exports.default = MockableContainer;

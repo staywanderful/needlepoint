@@ -1,12 +1,12 @@
-import Container from './container';
+import { container } from './index';
 
 var substitutions = new Map();
 
-export default class MockableContainer extends Container {
+export default class MockableContainer extends container {
     static substitute(original, replacement) {
 
       // If any substitutions are made, replace Container's resolve function
-      Object.assign(Container, {
+      Object.assign(container, {
         resolveSingleInstance: MockableContainer.mockableResolveSingleInstance
       })
       substitutions.set(original, replacement);
@@ -19,7 +19,7 @@ export default class MockableContainer extends Container {
      */
     static mockableResolveSingleInstance(clazz) {
         // Check and see if there are any dependencies that need to be injected
-        var deps = Container.resolveAll(...(super.getDependencies().get(clazz) || []));
+        var deps = container.resolveAll(...(super.getDependencies().get(clazz) || []));
         if(substitutions.has(clazz)) {
           var sub = substitutions.get(clazz);
           return new sub(...deps);
