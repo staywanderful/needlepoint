@@ -120,7 +120,7 @@ Needlepoint includes a simple test mocking facility for replacing dependencies i
 
 ```
 import {dependencies} from 'needlepoint';
-import container from 'needlepoint/mockableContainer';
+import container from 'needlepoint/dist/mockableContainer';
 
 class MyDependency {
     constructor()
