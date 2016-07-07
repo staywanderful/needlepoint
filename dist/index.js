@@ -31,13 +31,4 @@ Object.defineProperty(exports, 'dependencies', {
   }
 });
 
-var _mockableContainer = require('./mockableContainer');
-
-Object.defineProperty(exports, 'mockableContainer', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_mockableContainer).default;
-  }
-});
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
