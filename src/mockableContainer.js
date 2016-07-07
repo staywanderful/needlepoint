@@ -66,4 +66,8 @@ export default class MockableContainer extends Container {
           return new clazz(...deps);
         }
     }
+
+    static clear() {
+      substitutions.clear();
+    }
 }

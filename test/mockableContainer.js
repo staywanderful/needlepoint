@@ -50,15 +50,40 @@ class MockDummyDependency{
 }
 
 describe('mockableContainer', function() {
+    afterEach(function(){
+      mockableContainer.clear();
+    });
 
     context("with mocks specified", function(){
-        it.only('should resolve a class with a single mocked dependency', function() {
+        it('should resolve a class with a single mocked dependency', function() {
             mockableContainer.substitute(DummyDependency, MockDummyDependency);
             var dummyClass = mockableContainer.resolve(DummyWithDependency);
 
             expect(dummyClass).to.be.an.instanceOf(DummyWithDependency);
             expect(dummyClass.getDependency()).to.be.an.instanceOf(MockDummyDependency);
         });
+
+        it('should resolve a class with nested dependencies mocked at the second level', function() {
+            mockableContainer.substitute(DummyDependency, MockDummyDependency);
+            var dummyClass = mockableContainer.resolve(DummyWithNestedDependencies);
+
+            expect(dummyClass).to.be.an.instanceOf(DummyWithNestedDependencies);
+
+            expect(dummyClass.getDependency()).to.be.an.instanceOf(DummyWithDependency);
+            expect(dummyClass.getDependency().getDependency()).to.be
+                .an.instanceOf(MockDummyDependency);
+        });
+        it('should resolve a class with nested dependencies mocked at the first level', function() {
+            mockableContainer.substitute(DummyWithDependency, MockDummyDependency);
+            var dummyClass = mockableContainer.resolve(DummyWithNestedDependencies);
+
+            expect(dummyClass).to.be.an.instanceOf(DummyWithNestedDependencies);
+
+            expect(dummyClass.getDependency()).to.be.an.instanceOf(MockDummyDependency);
+            expect(dummyClass.getDependency().getDependency).to.be.undefined;
+        });
+
+
     });
 
     context("without mocks specified", function() {

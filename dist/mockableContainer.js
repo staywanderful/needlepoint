@@ -42,31 +42,6 @@ var MockableContainer = function (_Container) {
             substitutions.set(original, replacement);
         }
 
-        // /**
-        //  * Resolve a single class to an instance, injecting dependencies as needed
-        //  * @param  {class|string} clazz
-        //  * @return {object}       Instance of the class
-        //  */
-        // static resolve(clazz) {
-        //     clazz = Container.normalizeClass(clazz);
-
-        //     console.log("MC Resolving:"+ clazz);
-        //     substitutions.forEach(function(value, key){
-        //       console.log(key + " -> " + value);
-        //     });
-
-        //     console.log("substitutions keys: " + substitutions.keys());
-        //     // If the class being injected is a singleton, handle it separately
-        //     // since instances of it are cached.
-        //     if(substitutions.has(clazz)) {
-        //         var substituted = substitutions.get(clazz);
-        //         console.log("instantiating: " + substituted);
-        //         return new substituted();
-        //     } else {
-        //         return Container.resolve(clazz);
-        //     }
-        // }
-
         /**
         * Resolve a single class to an instance, injecting dependencies as needed
         * @param  {class|string} clazz
@@ -141,6 +116,11 @@ var MockableContainer = function (_Container) {
                 // Apply the dependencies and create a new instance of the class
                 return new (Function.prototype.bind.apply(clazz, [null].concat(_toConsumableArray(deps))))();
             }
+        }
+    }, {
+        key: "clear",
+        value: function clear() {
+            substitutions.clear();
         }
     }]);
 
