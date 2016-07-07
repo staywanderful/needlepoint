@@ -82,8 +82,6 @@ describe('mockableContainer', function() {
             expect(dummyClass.getDependency()).to.be.an.instanceOf(MockDummyDependency);
             expect(dummyClass.getDependency().getDependency).to.be.undefined;
         });
-
-
     });
 
     context("without mocks specified", function() {

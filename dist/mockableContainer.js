@@ -1,17 +1,15 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = undefined;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _container = require("./container");
+var _container = require('./container');
 
 var _container2 = _interopRequireDefault(_container);
 
@@ -37,7 +35,7 @@ var MockableContainer = function (_Container) {
     }
 
     _createClass(MockableContainer, null, [{
-        key: "substitute",
+        key: 'substitute',
         value: function substitute(original, replacement) {
             substitutions.set(original, replacement);
         }
@@ -49,14 +47,14 @@ var MockableContainer = function (_Container) {
         */
 
     }, {
-        key: "resolve",
+        key: 'resolve',
         value: function resolve(clazz) {
             clazz = _container2.default.normalizeClass(clazz);
 
             // If the class being injected is a singleton, handle it separately
             // since instances of it are cached.
-            if (_get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).has(clazz)) {
-                return MockableContainer.resolveSingleton(clazz);
+            if (_get(Object.getPrototypeOf(MockableContainer), 'getSingletons', this).call(this).has(clazz)) {
+                return _get(Object.getPrototypeOf(MockableContainer), 'resolveSingleton', this).call(this, clazz);
             } else {
                 return MockableContainer.resolveSingleInstance(clazz);
             }
@@ -69,32 +67,13 @@ var MockableContainer = function (_Container) {
          */
 
     }, {
-        key: "resolveAll",
+        key: 'resolveAll',
         value: function resolveAll() {
-            console.log("MC resolveAll");
-
             for (var _len = arguments.length, classes = Array(_len), _key = 0; _key < _len; _key++) {
                 classes[_key] = arguments[_key];
             }
 
             return classes.map(MockableContainer.resolve);
-        }
-
-        /**
-         * Resolve a class into a singleton instance. This single instance will be
-         * used across the entire application.
-         * @param  {class|string} clazz
-         * @return {object}       Resolved instance of the class as a singleton
-         */
-
-    }, {
-        key: "resolveSingleton",
-        value: function resolveSingleton(clazz) {
-            if (_get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).get(clazz) === null) {
-                _get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).set(clazz, MockableContainer.resolveSingleInstance(clazz));
-            }
-
-            return _get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).get(clazz);
         }
 
         /**
@@ -104,11 +83,10 @@ var MockableContainer = function (_Container) {
          */
 
     }, {
-        key: "resolveSingleInstance",
+        key: 'resolveSingleInstance',
         value: function resolveSingleInstance(clazz) {
-            console.log("MC Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
             // Check and see if there are any dependencies that need to be injected
-            var deps = MockableContainer.resolveAll.apply(MockableContainer, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), "getDependencies", this).call(this).get(clazz) || []));
+            var deps = MockableContainer.resolveAll.apply(MockableContainer, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), 'getDependencies', this).call(this).get(clazz) || []));
             if (substitutions.has(clazz)) {
                 var sub = substitutions.get(clazz);
                 return new (Function.prototype.bind.apply(sub, [null].concat(_toConsumableArray(deps))))();
@@ -118,7 +96,7 @@ var MockableContainer = function (_Container) {
             }
         }
     }, {
-        key: "clear",
+        key: 'clear',
         value: function clear() {
             substitutions.clear();
         }

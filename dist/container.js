@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -27,17 +27,17 @@ var Container = function () {
     }
 
     _createClass(Container, null, [{
-        key: "getSingletons",
+        key: 'getSingletons',
         value: function getSingletons() {
             return singletons;
         }
     }, {
-        key: "getDependencies",
+        key: 'getDependencies',
         value: function getDependencies() {
             return dependencies;
         }
     }, {
-        key: "resolve",
+        key: 'resolve',
 
         /**
          * Resolve a single class to an instance, injecting dependencies as needed
@@ -63,7 +63,7 @@ var Container = function () {
          */
 
     }, {
-        key: "resolveAll",
+        key: 'resolveAll',
         value: function resolveAll() {
             for (var _len = arguments.length, classes = Array(_len), _key = 0; _key < _len; _key++) {
                 classes[_key] = arguments[_key];
@@ -80,7 +80,7 @@ var Container = function () {
          */
 
     }, {
-        key: "resolveSingleton",
+        key: 'resolveSingleton',
         value: function resolveSingleton(clazz) {
             if (singletons.get(clazz) === null) {
                 singletons.set(clazz, Container.resolveSingleInstance(clazz));
@@ -96,9 +96,8 @@ var Container = function () {
          */
 
     }, {
-        key: "resolveSingleInstance",
+        key: 'resolveSingleInstance',
         value: function resolveSingleInstance(clazz) {
-            console.log("C Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
             // Check and see if there are any dependencies that need to be injected
             var deps = Container.resolveAll.apply(Container, _toConsumableArray(dependencies.get(clazz) || []));
 
@@ -113,7 +112,7 @@ var Container = function () {
          */
 
     }, {
-        key: "normalizeClass",
+        key: 'normalizeClass',
         value: function normalizeClass(clazz) {
             if (typeof clazz == 'string') {
                 // TODO: Actually resolve the class from the string name that
@@ -132,9 +131,9 @@ var Container = function () {
          */
 
     }, {
-        key: "registerInstance",
+        key: 'registerInstance',
         value: function registerInstance(clazz, instance) {
-            if ((typeof instance === "undefined" ? "undefined" : _typeof(instance)) != 'object' && typeof instance != 'function') {
+            if ((typeof instance === 'undefined' ? 'undefined' : _typeof(instance)) != 'object' && typeof instance != 'function') {
                 throw new Error('The argument passed was an invalid type.');
             }
 
@@ -150,7 +149,7 @@ var Container = function () {
          */
 
     }, {
-        key: "registerDependencies",
+        key: 'registerDependencies',
         value: function registerDependencies(clazz, deps) {
             dependencies.set(clazz, deps);
         }
@@ -162,7 +161,7 @@ var Container = function () {
          */
 
     }, {
-        key: "registerAsSingleton",
+        key: 'registerAsSingleton',
         value: function registerAsSingleton(clazz) {
             if (!singletons.has(clazz)) {
                 singletons.set(clazz, null);
