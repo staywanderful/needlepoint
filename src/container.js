@@ -8,6 +8,8 @@ var dependencies = new Map();
 var singletons = new Map();
 
 export default class Container {
+    static getSingletons() { return singletons };
+    static getDependencies() { return dependencies };
     /**
      * Resolve a single class to an instance, injecting dependencies as needed
      * @param  {class|string} clazz
@@ -54,7 +56,7 @@ export default class Container {
      * @return {object}       Resolved instance of the class
      */
     static resolveSingleInstance(clazz) {
-        console.log("Resolving: " + clazz + " type " + typeof(clazz));
+        console.log("C Resolving: " + clazz + " type " + typeof(clazz));
         // Check and see if there are any dependencies that need to be injected
         var deps = Container.resolveAll(...(dependencies.get(clazz) || []));
 

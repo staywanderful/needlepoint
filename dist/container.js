@@ -27,6 +27,16 @@ var Container = function () {
     }
 
     _createClass(Container, null, [{
+        key: "getSingletons",
+        value: function getSingletons() {
+            return singletons;
+        }
+    }, {
+        key: "getDependencies",
+        value: function getDependencies() {
+            return dependencies;
+        }
+    }, {
         key: "resolve",
 
         /**
@@ -88,7 +98,7 @@ var Container = function () {
     }, {
         key: "resolveSingleInstance",
         value: function resolveSingleInstance(clazz) {
-            console.log("Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
+            console.log("C Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
             // Check and see if there are any dependencies that need to be injected
             var deps = Container.resolveAll.apply(Container, _toConsumableArray(dependencies.get(clazz) || []));
 

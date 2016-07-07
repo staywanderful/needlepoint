@@ -1,15 +1,23 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.default = undefined;
 
-var _container2 = require('./container');
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _container3 = _interopRequireDefault(_container2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _container = require("./container");
+
+var _container2 = _interopRequireDefault(_container);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -17,16 +25,126 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var mockableContainer = function (_container) {
-  _inherits(mockableContainer, _container);
+var substitutions = new Map();
 
-  function mockableContainer() {
-    _classCallCheck(this, mockableContainer);
+var MockableContainer = function (_Container) {
+    _inherits(MockableContainer, _Container);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(mockableContainer).apply(this, arguments));
-  }
+    function MockableContainer() {
+        _classCallCheck(this, MockableContainer);
 
-  return mockableContainer;
-}(_container3.default);
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(MockableContainer).apply(this, arguments));
+    }
 
-exports.default = mockableContainer;
+    _createClass(MockableContainer, null, [{
+        key: "substitute",
+        value: function substitute(original, replacement) {
+            substitutions.set(original, replacement);
+        }
+
+        // /**
+        //  * Resolve a single class to an instance, injecting dependencies as needed
+        //  * @param  {class|string} clazz
+        //  * @return {object}       Instance of the class
+        //  */
+        // static resolve(clazz) {
+        //     clazz = Container.normalizeClass(clazz);
+
+        //     console.log("MC Resolving:"+ clazz);
+        //     substitutions.forEach(function(value, key){
+        //       console.log(key + " -> " + value);
+        //     });
+
+        //     console.log("substitutions keys: " + substitutions.keys());
+        //     // If the class being injected is a singleton, handle it separately
+        //     // since instances of it are cached.
+        //     if(substitutions.has(clazz)) {
+        //         var substituted = substitutions.get(clazz);
+        //         console.log("instantiating: " + substituted);
+        //         return new substituted();
+        //     } else {
+        //         return Container.resolve(clazz);
+        //     }
+        // }
+
+        /**
+        * Resolve a single class to an instance, injecting dependencies as needed
+        * @param  {class|string} clazz
+        * @return {object}       Instance of the class
+        */
+
+    }, {
+        key: "resolve",
+        value: function resolve(clazz) {
+            clazz = _container2.default.normalizeClass(clazz);
+
+            // If the class being injected is a singleton, handle it separately
+            // since instances of it are cached.
+            if (_get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).has(clazz)) {
+                return MockableContainer.resolveSingleton(clazz);
+            } else {
+                return MockableContainer.resolveSingleInstance(clazz);
+            }
+        }
+
+        /**
+         * Resolve the specified classes, injecting dependencies as needed
+         * @param  {class|string} ...classes
+         * @return {...object}
+         */
+
+    }, {
+        key: "resolveAll",
+        value: function resolveAll() {
+            console.log("MC resolveAll");
+
+            for (var _len = arguments.length, classes = Array(_len), _key = 0; _key < _len; _key++) {
+                classes[_key] = arguments[_key];
+            }
+
+            return classes.map(MockableContainer.resolve);
+        }
+
+        /**
+         * Resolve a class into a singleton instance. This single instance will be
+         * used across the entire application.
+         * @param  {class|string} clazz
+         * @return {object}       Resolved instance of the class as a singleton
+         */
+
+    }, {
+        key: "resolveSingleton",
+        value: function resolveSingleton(clazz) {
+            if (_get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).get(clazz) === null) {
+                _get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).set(clazz, MockableContainer.resolveSingleInstance(clazz));
+            }
+
+            return _get(Object.getPrototypeOf(MockableContainer), "getSingletons", this).call(this).get(clazz);
+        }
+
+        /**
+         * Resolve a class into an instance with all of its dependencies injected.
+         * @param  {class|string} clazz
+         * @return {object}       Resolved instance of the class
+         */
+
+    }, {
+        key: "resolveSingleInstance",
+        value: function resolveSingleInstance(clazz) {
+            console.log("MC Resolving: " + clazz + " type " + (typeof clazz === "undefined" ? "undefined" : _typeof(clazz)));
+            // Check and see if there are any dependencies that need to be injected
+            var deps = MockableContainer.resolveAll.apply(MockableContainer, _toConsumableArray(_get(Object.getPrototypeOf(MockableContainer), "getDependencies", this).call(this).get(clazz) || []));
+            if (substitutions.has(clazz)) {
+                var sub = substitutions.get(clazz);
+                return new (Function.prototype.bind.apply(sub, [null].concat(_toConsumableArray(deps))))();
+            } else {
+                // Apply the dependencies and create a new instance of the class
+                return new (Function.prototype.bind.apply(clazz, [null].concat(_toConsumableArray(deps))))();
+            }
+        }
+    }]);
+
+    return MockableContainer;
+}(_container2.default);
+
+exports.default = MockableContainer;
